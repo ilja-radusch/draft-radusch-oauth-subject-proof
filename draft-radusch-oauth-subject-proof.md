@@ -376,7 +376,10 @@ registration policy.
   internal-subject comparison and session-revoked events. Both are behind
   configuration flags that are off by default. Both metadata parameters
   ({{metadata}}) are published when the matching feature is enabled.
-  Session-revoked events are delivered by poll ({{RFC8936}}).
+  Session-revoked events are delivered by poll ({{RFC8936}}). Delegated
+  tokens are rejected as proofs ({{delegated-proofs}}). The rule in
+  {{revocation-effect}} for a refresh request in progress during the
+  revocation is being implemented.
 * Level of maturity: production.
 * Contact: Ilja Radusch.
 
