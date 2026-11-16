@@ -2,7 +2,7 @@
 title: "OAuth 2.0 Subject-Proof Callers for Token Introspection and Revocation"
 abbrev: "OAuth Subject-Proof Callers"
 category: std
-docname: draft-radusch-oauth-subject-proof-00
+docname: draft-radusch-oauth-subject-proof-01
 submissiontype: IETF
 number:
 date:
@@ -40,6 +40,8 @@ normative:
 informative:
   ACTOR-PROFILE: I-D.mcguinness-oauth-actor-profile
   GLOBAL-REVOCATION: I-D.parecki-oauth-global-token-revocation
+  REVOCATION-CLOSURE: I-D.watts-oauth-agent-revocation-closure
+  RFC8936:
   GRANT-MANAGEMENT:
     title: "Grant Management for OAuth 2.0"
     author:
@@ -253,6 +255,36 @@ An AS that publishes security events SHOULD emit a session-revoked event
 {{CAEP}} for each revoked grant, so that other receivers stop accepting its
 tokens before they expire.
 
+## Effect of Revocation {#revocation-effect}
+
+Revocation takes effect at the AS before the AS sends the response. From
+that point the AS:
+
+* MUST NOT issue a new access or refresh token for a selected grant,
+  including through a refresh request that was in progress when the
+  revocation was processed;
+* MUST return `"active": false` when a token of a selected grant is
+  introspected ({{RFC7662}}).
+
+A protected resource that validates self-contained access tokens
+({{RFC9068}}) locally can still accept a token of a revoked grant until
+the token expires, until the resource introspects it, or until it
+processes the session-revoked event. Short access token lifetimes limit
+this window.
+
+The session-revoked event notifies receivers that the grant was revoked.
+It is not a receipt that every effect of the grant has stopped. This
+document adds no delivery or ordering guarantee beyond those of the
+delivery method in use, for example the at-least-once delivery of
+{{RFC8936}}. A receiver MUST NOT infer, from the event or from its
+absence, that no operation admitted under the grant can still complete.
+
+Operations that a protected resource or the agent admitted or queued
+before the revocation, and credentials derived from the grant's tokens
+(for example through token exchange {{RFC8693}}), are out of scope.
+Closing them is a matter for the party that holds them;
+{{REVOCATION-CLOSURE}} describes one model for proving such closure.
+
 # Authorization Server Metadata {#metadata}
 
 This document defines the following AS metadata parameters {{RFC8414}}:
@@ -326,9 +358,9 @@ registration policy.
 * Coverage: introspection ({{introspection}}) and revocation
   ({{revocation}}) as described, including the public-client rule, the
   internal-subject comparison and session-revoked events. Both are behind
-  configuration flags that are off by default. The
-  `revocation_subject_proof_token_supported` metadata parameter is
-  published; `introspection_subject_proof_token_supported` is being added.
+  configuration flags that are off by default. Both metadata parameters
+  ({{metadata}}) are published when the matching feature is enabled.
+  Session-revoked events are delivered by poll ({{RFC8936}}).
 * Level of maturity: production.
 * Contact: Ilja Radusch.
 
