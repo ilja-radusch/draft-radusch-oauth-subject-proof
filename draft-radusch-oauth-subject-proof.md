@@ -2,7 +2,7 @@
 title: "OAuth 2.0 Subject-Proof Callers for Token Introspection and Revocation"
 abbrev: "OAuth Subject-Proof Callers"
 category: std
-docname: draft-radusch-oauth-subject-proof-01
+docname: draft-radusch-oauth-subject-proof-02
 submissiontype: IETF
 number:
 date:
@@ -154,6 +154,10 @@ step as "no proof":
    remains cryptographically valid after revocation.
 5. The subject proof token MUST identify a subject. The proven subject is
    that subject, as the AS identifies the end user internally.
+6. The subject proof token MUST NOT be a delegated token: it MUST NOT
+   carry an `act` claim ({{Section 4.1 of RFC8693}}), and the AS MUST NOT
+   have issued it under a grant that delegates the user's authority to
+   an actor. See {{delegated-proofs}}.
 
 Step 3 is essential. Without it, any party that obtains a user's access
 token for some other client could use it as a proof.
@@ -332,6 +336,18 @@ The AS MUST NOT log its value. A sender-constrained subject proof token
 (DPoP or mutual TLS) does not need to be presented with a proof of
 possession at this endpoint, because the caller already authenticated as
 the client the token was issued to.
+
+## Delegated Tokens Are Not Proofs {#delegated-proofs}
+
+A subject proof stands for the end user acting through the caller. A
+token that an AS issued to an actor, such as an AI agent, under a
+delegated grant does not: the actor uses it without step-by-step
+instruction from the user. If such a token were accepted, one delegated
+actor could read the delegation metadata of the user's other grants, or
+revoke the grants of other actors, using authority the user gave it for
+a different purpose. Step 6 of {{verification}} therefore rejects
+delegated tokens, whether the delegation is visible in the token (an
+`act` claim) or only in the AS's records.
 
 ## Correlation Identifiers Are Selectors, Not Authorization
 
