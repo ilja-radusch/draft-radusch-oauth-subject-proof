@@ -2,7 +2,7 @@
 title: "OAuth 2.0 Subject-Proof Callers for Token Introspection and Revocation"
 abbrev: "OAuth Subject-Proof Callers"
 category: std
-docname: draft-radusch-oauth-subject-proof-02
+docname: draft-radusch-oauth-subject-proof-03
 submissiontype: IETF
 number:
 date:
@@ -377,9 +377,9 @@ registration policy.
   configuration flags that are off by default. Both metadata parameters
   ({{metadata}}) are published when the matching feature is enabled.
   Session-revoked events are delivered by poll ({{RFC8936}}). Delegated
-  tokens are rejected as proofs ({{delegated-proofs}}). The rule in
-  {{revocation-effect}} for a refresh request in progress during the
-  revocation is being implemented.
+  tokens are rejected as proofs ({{delegated-proofs}}). A refresh request
+  in progress during a revocation cannot issue tokens for the revoked
+  grant ({{revocation-effect}}).
 * Level of maturity: production.
 * Contact: Ilja Radusch.
 

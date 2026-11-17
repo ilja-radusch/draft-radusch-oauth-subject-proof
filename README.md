@@ -9,6 +9,6 @@ Discussion: the OAuth WG mailing list (oauth@ietf.org) or issues in this reposit
 ```bash
 gem install kramdown-rfc
 pipx install xml2rfc
-kramdown-rfc draft-radusch-oauth-subject-proof.md > draft-radusch-oauth-subject-proof-02.xml
-xml2rfc --text --html draft-radusch-oauth-subject-proof-02.xml
+kramdown-rfc draft-radusch-oauth-subject-proof.md > draft-radusch-oauth-subject-proof-03.xml
+xml2rfc --text --html draft-radusch-oauth-subject-proof-03.xml
 ```
